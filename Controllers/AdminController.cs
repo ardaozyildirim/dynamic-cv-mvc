@@ -6,19 +6,32 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Cryptography;
+using System.Text;
+using Microsoft.Extensions.Hosting;
+using Microsoft.AspNetCore.Antiforgery;
 
 namespace DinamikCvSitesi.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class AdminController : Controller
     {
         private readonly CVContext _context;
+        private readonly ILogger<AdminController> _logger;
+        private readonly IHostEnvironment _environment;
+        private readonly IAntiforgery _antiforgery;
 
-        public AdminController(CVContext context)
+        public AdminController(CVContext context, ILogger<AdminController> logger, IHostEnvironment environment, IAntiforgery antiforgery)
         {
             _context = context;
+            _logger = logger;
+            _environment = environment;
+            _antiforgery = antiforgery;
         }
 
-        // Admin giriş sayfası
+        // Admin giriş sayfası - Giriş için authorize gerekmiyor
+        [AllowAnonymous]
         public IActionResult Login()
         {
             if (User.Identity.IsAuthenticated)
@@ -28,55 +41,79 @@ namespace DinamikCvSitesi.Controllers
             return View();
         }
 
+        [AllowAnonymous]
         [HttpPost]
-        public async Task<IActionResult> Login(string username, string password, bool rememberMe = true)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Login(string username, string password, bool rememberMe = false)
         {
-            var admin = await _context.Admins.FirstOrDefaultAsync(a => a.Username == username && a.Password == password);
-
-            if (admin != null)
+            try
             {
-                // Claims based identity oluştur
-                var claims = new List<Claim>
+                // Kullanıcı adını kontrol et
+                var admin = await _context.Admins.FirstOrDefaultAsync(a => a.Username == username);
+
+                if (admin != null && VerifyPassword(password, admin.Password))
                 {
-                    new Claim(ClaimTypes.NameIdentifier, admin.AdminID.ToString()),
-                    new Claim(ClaimTypes.Name, admin.Username),
-                    new Claim(ClaimTypes.Role, "Admin")
-                };
+                    // Claims based identity oluştur
+                    var claims = new List<Claim>
+                    {
+                        new Claim(ClaimTypes.NameIdentifier, admin.AdminID.ToString()),
+                        new Claim(ClaimTypes.Name, admin.Username),
+                        new Claim(ClaimTypes.Role, "Admin")
+                    };
 
-                var claimsIdentity = new ClaimsIdentity(claims, "DinamikCvSitesiCookie");
+                    var claimsIdentity = new ClaimsIdentity(claims, "DinamikCvSitesiCookie");
 
-                // Kalıcı giriş için cookie ayarları
-                var authProperties = new AuthenticationProperties
-                {
-                    IsPersistent = rememberMe,
-                    ExpiresUtc = DateTimeOffset.UtcNow.AddDays(30)
-                };
+                    // Cookie ayarları
+                    var authProperties = new AuthenticationProperties
+                    {
+                        IsPersistent = rememberMe,
+                        ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(30)
+                    };
 
-                // Kullanıcıyı giriş yaptır
-                await HttpContext.SignInAsync("DinamikCvSitesiCookie", new ClaimsPrincipal(claimsIdentity), authProperties);
+                    // Kullanıcıyı giriş yaptır
+                    await HttpContext.SignInAsync("DinamikCvSitesiCookie", new ClaimsPrincipal(claimsIdentity), authProperties);
 
-                // Session'a da admin bilgilerini kaydet (eski kodla uyumluluk için)
-                HttpContext.Session.SetInt32("AdminId", admin.AdminID);
-                HttpContext.Session.SetString("AdminUsername", admin.Username);
-                
-                return RedirectToAction("Index", "Admin");
+                    _logger.LogInformation($"Admin user {username} logged in at {DateTime.UtcNow}");
+                    return RedirectToAction("Index", "Admin");
+                }
+
+                _logger.LogWarning($"Failed login attempt for username {username} at {DateTime.UtcNow}");
+                ViewBag.Error = "Kullanıcı adı veya şifre hatalı!";
+                return View();
             }
-
-            ViewBag.Error = "Kullanıcı adı veya şifre hatalı!";
-            return View();
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error during login for user {username}");
+                ViewBag.Error = "Giriş yapılırken bir hata oluştu.";
+                return View();
+            }
         }
 
         // Admin çıkış işlemi
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Logout()
         {
-            // Authentication cookie'yi temizle
-            await HttpContext.SignOutAsync("DinamikCvSitesiCookie");
-            
-            // Session'dan admin bilgilerini temizle
-            HttpContext.Session.Remove("AdminId");
-            HttpContext.Session.Remove("AdminUsername");
-            
-            return RedirectToAction("Login");
+            try
+            {
+                // Authentication cookie'yi temizle
+                await HttpContext.SignOutAsync("DinamikCvSitesiCookie");
+                
+                _logger.LogInformation($"Admin user {User.Identity.Name} logged out at {DateTime.UtcNow}");
+                return RedirectToAction("Login");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error during logout");
+                return RedirectToAction("Login");
+            }
+        }
+
+        // Erişim reddedildi sayfası
+        [AllowAnonymous]
+        public IActionResult AccessDenied()
+        {
+            return View();
         }
 
         // Admin girişi kontrolü için helper method
@@ -85,21 +122,25 @@ namespace DinamikCvSitesi.Controllers
             return User.Identity.IsAuthenticated || HttpContext.Session.GetInt32("AdminId") != null;
         }
 
-        // Admin dashboard sayfası - giriş kontrolü
+        // Admin dashboard sayfası
         public async Task<IActionResult> Index()
         {
-            if (!IsAdminLoggedIn())
+            try
             {
-                return RedirectToAction("Login");
+                // Dashboard için gerekli sayım istatistiklerini topla
+                ViewBag.EducationCount = await _context.Educations.CountAsync(e => e.ProfileID == 1);
+                ViewBag.ExperienceCount = await _context.Experiences.CountAsync(e => e.ProfileID == 1);
+                ViewBag.SkillCount = await _context.Skills.CountAsync(s => s.ProfileID == 1);
+                ViewBag.CertificateCount = await _context.Certificates.CountAsync(c => c.ProfileID == 1);
+
+                return View();
             }
-
-            // Dashboard için gerekli sayım istatistiklerini topla
-            ViewBag.EducationCount = await _context.Educations.CountAsync(e => e.ProfileID == 1);
-            ViewBag.ExperienceCount = await _context.Experiences.CountAsync(e => e.ProfileID == 1);
-            ViewBag.SkillCount = await _context.Skills.CountAsync(s => s.ProfileID == 1);
-            ViewBag.CertificateCount = await _context.Certificates.CountAsync(c => c.ProfileID == 1);
-
-            return View();
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error retrieving dashboard data");
+                ViewBag.Error = "Veriler yüklenirken bir hata oluştu.";
+                return View();
+            }
         }
 
         #region Profil Yönetimi
@@ -107,29 +148,36 @@ namespace DinamikCvSitesi.Controllers
         // Profil düzenleme sayfası
         public async Task<IActionResult> EditProfile()
         {
-            if (!IsAdminLoggedIn())
+            try
             {
-                return RedirectToAction("Login");
-            }
+                var profile = await _context.Profiles.FirstOrDefaultAsync(p => p.ProfileID == 1);
+                if (profile == null)
+                {
+                    _logger.LogWarning("Profile not found during edit request");
+                    return NotFound();
+                }
 
-            var profile = await _context.Profiles.FirstOrDefaultAsync(p => p.ProfileID == 1);
-            return View(profile);
+                return View(profile);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error retrieving profile for editing");
+                ViewBag.Error = "Profil verileri yüklenirken bir hata oluştu.";
+                return View(new Profile());
+            }
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditProfile(Profile profile, IFormFile profileImage)
         {
-            if (!IsAdminLoggedIn())
-            {
-                return RedirectToAction("Login");
-            }
-
             try 
             {
                 var existingProfile = await _context.Profiles.FindAsync(profile.ProfileID);
 
                 if (existingProfile == null)
                 {
+                    _logger.LogWarning($"Profile with ID {profile.ProfileID} not found during update");
                     ViewBag.Error = "Profil bulunamadı!";
                     return View(profile);
                 }
@@ -168,6 +216,23 @@ namespace DinamikCvSitesi.Controllers
                 // Profil resmi yükleme işlemi
                 if (profileImage != null && profileImage.Length > 0)
                 {
+                    // Validate file extension
+                    var validExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif" };
+                    var extension = Path.GetExtension(profileImage.FileName).ToLowerInvariant();
+                    
+                    if (!validExtensions.Contains(extension))
+                    {
+                        ViewBag.Error = "Lütfen geçerli bir resim dosyası (.jpg, .jpeg, .png, .gif) yükleyin.";
+                        return View(existingProfile);
+                    }
+                    
+                    // Validate file size (max 5MB)
+                    if (profileImage.Length > 5 * 1024 * 1024)
+                    {
+                        ViewBag.Error = "Dosya boyutu 5MB'dan küçük olmalıdır.";
+                        return View(existingProfile);
+                    }
+                    
                     try
                     {
                         // Dosya yükleme işlemleri
@@ -188,15 +253,18 @@ namespace DinamikCvSitesi.Controllers
                         }
 
                         existingProfile.ImagePath = "/images/" + fileName;
+                        _logger.LogInformation($"Profile image uploaded successfully: {fileName}");
                     }
                     catch (Exception ex)
                     {
+                        _logger.LogError(ex, "Error uploading profile image");
                         ViewBag.Error = "Profil resmi yüklenirken bir hata oluştu: " + ex.Message;
                         return View(existingProfile);
                     }
                 }
 
                 await _context.SaveChangesAsync();
+                _logger.LogInformation($"Profile updated successfully: {existingProfile.ProfileID}");
                 ViewBag.Success = "Profil başarıyla güncellendi!";
                 
                 // Güncel verileri göster
@@ -204,6 +272,7 @@ namespace DinamikCvSitesi.Controllers
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, $"Error updating profile {profile.ProfileID}");
                 ViewBag.Error = "Profil güncellenirken bir hata oluştu: " + ex.Message;
                 return View(profile);
             }
@@ -215,42 +284,46 @@ namespace DinamikCvSitesi.Controllers
         
         public async Task<IActionResult> Educations()
         {
-            if (!IsAdminLoggedIn())
+            try
             {
-                return RedirectToAction("Login");
+                var educations = await _context.Educations.Where(e => e.ProfileID == 1).ToListAsync();
+                return View(educations);
             }
-
-            var educations = await _context.Educations.Where(e => e.ProfileID == 1).ToListAsync();
-            return View(educations);
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error retrieving education list");
+                ViewBag.Error = "Eğitim bilgileri yüklenirken bir hata oluştu.";
+                return View(new List<Education>());
+            }
         }
 
         public IActionResult AddEducation()
         {
-            if (!IsAdminLoggedIn())
-            {
-                return RedirectToAction("Login");
-            }
-
             return View(new Education { ProfileID = 1 });
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddEducation(Education education)
         {
-            if (!IsAdminLoggedIn())
+            try
             {
-                return RedirectToAction("Login");
+                if (ModelState.IsValid)
+                {
+                    education.ProfileID = 1;
+                    _context.Educations.Add(education);
+                    await _context.SaveChangesAsync();
+                    _logger.LogInformation($"Education added successfully: {education.EducationID}");
+                    return RedirectToAction("Educations");
+                }
+                return View(education);
             }
-
-            if (ModelState.IsValid)
+            catch (Exception ex)
             {
-                education.ProfileID = 1;
-                _context.Educations.Add(education);
-                await _context.SaveChangesAsync();
-                return RedirectToAction("Educations");
+                _logger.LogError(ex, "Error adding education record");
+                ViewBag.Error = "Eğitim bilgisi eklenirken bir hata oluştu.";
+                return View(education);
             }
-
-            return View(education);
         }
 
         public async Task<IActionResult> EditEducation(int id)
@@ -270,6 +343,7 @@ namespace DinamikCvSitesi.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditEducation(Education education)
         {
             if (!IsAdminLoggedIn())
@@ -331,6 +405,7 @@ namespace DinamikCvSitesi.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddExperience(Experience experience)
         {
             if (!IsAdminLoggedIn())
@@ -366,6 +441,7 @@ namespace DinamikCvSitesi.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditExperience(Experience experience)
         {
             if (!IsAdminLoggedIn())
@@ -427,6 +503,7 @@ namespace DinamikCvSitesi.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddSkill(Skill skill)
         {
             if (!IsAdminLoggedIn())
@@ -462,6 +539,7 @@ namespace DinamikCvSitesi.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditSkill(Skill skill)
         {
             if (!IsAdminLoggedIn())
@@ -503,13 +581,17 @@ namespace DinamikCvSitesi.Controllers
         
         public async Task<IActionResult> Certificates()
         {
-            if (!IsAdminLoggedIn())
+            try
             {
-                return RedirectToAction("Login");
+                var certificates = await _context.Certificates.Where(c => c.ProfileID == 1).ToListAsync();
+                return View(certificates);
             }
-
-            var certificates = await _context.Certificates.Where(c => c.ProfileID == 1).ToListAsync();
-            return View(certificates);
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error retrieving certificate list");
+                ViewBag.Error = "Sertifika bilgileri yüklenirken bir hata oluştu.";
+                return View(new List<Certificate>());
+            }
         }
 
         public IActionResult AddCertificate()
@@ -523,6 +605,7 @@ namespace DinamikCvSitesi.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddCertificate(Certificate certificate)
         {
             if (!IsAdminLoggedIn())
@@ -541,23 +624,8 @@ namespace DinamikCvSitesi.Controllers
             return View(certificate);
         }
 
-        public async Task<IActionResult> EditCertificate(int id)
-        {
-            if (!IsAdminLoggedIn())
-            {
-                return RedirectToAction("Login");
-            }
-
-            var certificate = await _context.Certificates.FindAsync(id);
-            if (certificate == null)
-            {
-                return NotFound();
-            }
-
-            return View(certificate);
-        }
-
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditCertificate(Certificate certificate)
         {
             if (!IsAdminLoggedIn())
@@ -576,21 +644,60 @@ namespace DinamikCvSitesi.Controllers
             return View(certificate);
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteCertificate(int id)
         {
-            if (!IsAdminLoggedIn())
+            try
             {
-                return RedirectToAction("Login");
-            }
+                var certificate = await _context.Certificates.FindAsync(id);
+                if (certificate != null)
+                {
+                    _context.Certificates.Remove(certificate);
+                    await _context.SaveChangesAsync();
+                    _logger.LogInformation($"Certificate deleted successfully: {id}");
+                }
+                else
+                {
+                    _logger.LogWarning($"Certificate not found during delete request: {id}");
+                }
 
-            var certificate = await _context.Certificates.FindAsync(id);
-            if (certificate != null)
+                return RedirectToAction("Certificates");
+            }
+            catch (Exception ex)
             {
-                _context.Certificates.Remove(certificate);
-                await _context.SaveChangesAsync();
+                _logger.LogError(ex, $"Error deleting certificate {id}");
+                TempData["Error"] = "Sertifika silinirken bir hata oluştu.";
+                return RedirectToAction("Certificates");
             }
+        }
+        
+        #endregion
 
-            return RedirectToAction("Certificates");
+        #region Yardımcı Metodlar
+        
+        // Şifre hashleme metodu
+        private string HashPassword(string password)
+        {
+            using (var sha256 = SHA256.Create())
+            {
+                var hashedBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(password));
+                return BitConverter.ToString(hashedBytes).Replace("-", "").ToLower();
+            }
+        }
+        
+        // Şifre doğrulama metodu
+        private bool VerifyPassword(string password, string hashedPassword)
+        {
+            // Eğer hash kullanılmıyorsa geçici olarak doğrudan karşılaştırma yap
+            // Not: Gerçek sistemlerde düz metin şifre kullanılmamalıdır
+            if (password == hashedPassword)
+            {
+                return true;
+            }
+            
+            var hashedInput = HashPassword(password);
+            return hashedInput == hashedPassword;
         }
         
         #endregion
