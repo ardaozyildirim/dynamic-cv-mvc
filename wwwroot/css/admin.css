@@ -10,6 +10,8 @@
     --success-color: #198754;
     --box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.1);
     --transition: all 0.3s ease-in-out;
+    --container-width: 1140px;
+    --sidebar-width: 250px;
 }
 
 body {
@@ -26,10 +28,28 @@ body {
     align-items: stretch;
 }
 
+/* Container styles for consistent width */
+.container {
+    max-width: var(--container-width);
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+.container-fluid {
+    width: 100%;
+    padding-left: 15px;
+    padding-right: 15px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
 /* Sidebar Styles */
 .sidebar {
-    min-width: 250px;
-    max-width: 250px;
+    min-width: var(--sidebar-width);
+    max-width: var(--sidebar-width);
     background: var(--dark-color);
     color: #fff;
     transition: var(--transition);
@@ -42,7 +62,7 @@ body {
 }
 
 .sidebar.active {
-    margin-left: -250px;
+    margin-left: calc(-1 * var(--sidebar-width));
 }
 
 .sidebar .sidebar-header {
@@ -97,7 +117,7 @@ body {
     width: 100%;
     min-height: 100vh;
     transition: var(--transition);
-    margin-left: 250px;
+    margin-left: var(--sidebar-width);
     display: flex;
     flex-direction: column;
 }
@@ -113,6 +133,11 @@ body {
     z-index: 998;
 }
 
+#content .navbar .container-fluid {
+    max-width: calc(var(--container-width) - var(--sidebar-width));
+    margin-left: 0;
+}
+
 #sidebarCollapse {
     width: 40px;
     height: 40px;
@@ -125,6 +150,8 @@ body {
 .content-area {
     flex: 1;
     padding: 2rem;
+    max-width: calc(var(--container-width) - var(--sidebar-width));
+    margin: 0 auto;
 }
 
 /* Card Styles */
@@ -267,10 +294,26 @@ body {
     color: #b71c1c;
 }
 
-/* Media Queries */
+/* Responsive */
+@media (max-width: 1200px) {
+    :root {
+        --container-width: 960px;
+    }
+}
+
+@media (max-width: 992px) {
+    :root {
+        --container-width: 720px;
+    }
+}
+
 @media (max-width: 768px) {
+    :root {
+        --container-width: 540px;
+    }
+    
     .sidebar {
-        margin-left: -250px;
+        margin-left: calc(-1 * var(--sidebar-width));
     }
     
     .sidebar.active {
@@ -282,10 +325,25 @@ body {
     }
     
     #content.active {
-        margin-left: 250px;
+        margin-left: var(--sidebar-width);
+    }
+    
+    .content-area {
+        max-width: 100%;
     }
     
     #sidebarCollapse span {
         display: none;
+    }
+}
+
+@media (max-width: 576px) {
+    :root {
+        --container-width: 100%;
+    }
+    
+    .container, .container-fluid {
+        padding-left: 20px;
+        padding-right: 20px;
     }
 } 

@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("DinamikCvSitesi")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+3e8deadd0dc30b4ad170d0ec80f3a56970e9171b")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+b91bbef5ac9d2a584624375875cdb5d57f685452")]
 [assembly: System.Reflection.AssemblyProductAttribute("DinamikCvSitesi")]
 [assembly: System.Reflection.AssemblyTitleAttribute("DinamikCvSitesi")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
