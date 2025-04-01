@@ -1,0 +1,143 @@
+@model DinamikCvSitesi.Models.Profile
+
+@{
+    ViewData["Title"] = "Profil Düzenle";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="card shadow-sm mb-4">
+    <div class="card-header">
+        <h5 class="card-title mb-0">Profil Bilgilerini Düzenle</h5>
+    </div>
+    <div class="card-body">
+        @if (ViewBag.Success != null)
+        {
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <i class="fas fa-check-circle me-2"></i> @ViewBag.Success
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+
+        @if (ViewBag.Error != null)
+        {
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <i class="fas fa-exclamation-circle me-2"></i> @ViewBag.Error
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+
+        <form asp-action="EditProfile" method="post" enctype="multipart/form-data">
+            <input type="hidden" asp-for="ProfileID" />
+            
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="mb-3">
+                        <label asp-for="FullName" class="form-label">Ad Soyad</label>
+                        <input asp-for="FullName" class="form-control" />
+                        <span asp-validation-for="FullName" class="text-danger"></span>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label asp-for="Title" class="form-label">Ünvan</label>
+                        <input asp-for="Title" class="form-control" />
+                        <span asp-validation-for="Title" class="text-danger"></span>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label asp-for="Summary" class="form-label">Özet</label>
+                        <textarea asp-for="Summary" class="form-control" rows="3"></textarea>
+                        <span asp-validation-for="Summary" class="text-danger"></span>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label asp-for="AboutMe" class="form-label">Hakkımda</label>
+                        <textarea asp-for="AboutMe" class="form-control" rows="5"></textarea>
+                        <span asp-validation-for="AboutMe" class="text-danger"></span>
+                    </div>
+                </div>
+                
+                <div class="col-md-4">
+                    <div class="mb-3">
+                        <label class="form-label">Profil Resmi</label>
+                        @if (!string.IsNullOrEmpty(Model.ImagePath))
+                        {
+                            <div class="text-center mb-3">
+                                <img src="@Model.ImagePath" class="img-thumbnail" style="max-height: 200px;" alt="Profil Resmi" />
+                            </div>
+                        }
+                        <input type="file" name="profileImage" class="form-control" accept="image/*" />
+                        <small class="text-muted">Profil resmini değiştirmek için yeni bir resim seçin.</small>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label asp-for="Email" class="form-label">E-posta</label>
+                        <input asp-for="Email" class="form-control" />
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label asp-for="Phone" class="form-label">Telefon</label>
+                        <input asp-for="Phone" class="form-control" />
+                        <span asp-validation-for="Phone" class="text-danger"></span>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label asp-for="Address" class="form-label">Adres</label>
+                        <textarea asp-for="Address" class="form-control" rows="2"></textarea>
+                        <span asp-validation-for="Address" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            
+            <hr />
+            
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="mb-3">
+                        <label asp-for="LinkedIn" class="form-label">LinkedIn</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fab fa-linkedin"></i></span>
+                            <input asp-for="LinkedIn" class="form-control" placeholder="https://linkedin.com/in/..." />
+                        </div>
+                        <span asp-validation-for="LinkedIn" class="text-danger"></span>
+                    </div>
+                </div>
+                
+                <div class="col-md-4">
+                    <div class="mb-3">
+                        <label asp-for="GitHub" class="form-label">GitHub</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fab fa-github"></i></span>
+                            <input asp-for="GitHub" class="form-control" placeholder="https://github.com/..." />
+                        </div>
+                        <span asp-validation-for="GitHub" class="text-danger"></span>
+                    </div>
+                </div>
+                
+                <div class="col-md-4">
+                    <div class="mb-3">
+                        <label asp-for="Twitter" class="form-label">Twitter</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fab fa-twitter"></i></span>
+                            <input asp-for="Twitter" class="form-control" placeholder="https://twitter.com/..." />
+                        </div>
+                        <span asp-validation-for="Twitter" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-end mt-3">
+                <a asp-action="Index" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left me-1"></i> İptal
+                </a>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save me-1"></i> Kaydet
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+} 

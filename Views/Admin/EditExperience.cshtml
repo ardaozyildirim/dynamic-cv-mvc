@@ -1,0 +1,93 @@
+@model DinamikCvSitesi.Models.Experience
+
+@{
+    ViewData["Title"] = "İş Deneyimi Düzenle";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="card shadow-sm">
+    <div class="card-body">
+        <h5 class="card-title mb-4">İş Deneyimi Düzenle</h5>
+        
+        <form asp-action="EditExperience" method="post">
+            <input type="hidden" asp-for="ExperienceID" />
+            <input type="hidden" asp-for="ProfileID" />
+            
+            <div class="mb-3">
+                <label asp-for="Company" class="form-label">Şirket Adı</label>
+                <input asp-for="Company" class="form-control" />
+                <span asp-validation-for="Company" class="text-danger"></span>
+            </div>
+            
+            <div class="mb-3">
+                <label asp-for="Position" class="form-label">Pozisyon</label>
+                <input asp-for="Position" class="form-control" />
+                <span asp-validation-for="Position" class="text-danger"></span>
+            </div>
+            
+            <div class="mb-3">
+                <label asp-for="Location" class="form-label">Lokasyon</label>
+                <input asp-for="Location" class="form-control" />
+                <span asp-validation-for="Location" class="text-danger"></span>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label asp-for="StartDate" class="form-label">Başlangıç Tarihi</label>
+                        <input asp-for="StartDate" class="form-control" type="date" />
+                        <span asp-validation-for="StartDate" class="text-danger"></span>
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label asp-for="EndDate" class="form-label">Bitiş Tarihi</label>
+                        <input asp-for="EndDate" class="form-control" type="date" id="endDate" />
+                        <span asp-validation-for="EndDate" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mb-3 form-check">
+                <input asp-for="IsCurrentlyWorking" class="form-check-input" id="isCurrentlyWorking" />
+                <label asp-for="IsCurrentlyWorking" class="form-check-label">Halen bu pozisyonda çalışıyorum</label>
+            </div>
+            
+            <div class="mb-3">
+                <label asp-for="Description" class="form-label">Açıklama</label>
+                <textarea asp-for="Description" class="form-control" rows="4"></textarea>
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+            
+            <div class="text-end">
+                <a asp-action="Experiences" class="btn btn-secondary">İptal</a>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save me-1"></i> Güncelle
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    
+    <script>
+        $(function() {
+            // Halen çalışıyorum seçeneği işaretlendiğinde bitiş tarihini devre dışı bırak
+            $('#isCurrentlyWorking').change(function() {
+                if($(this).is(':checked')) {
+                    $('#endDate').prop('disabled', true);
+                } else {
+                    $('#endDate').prop('disabled', false);
+                }
+            });
+            
+            // Sayfa yüklendiğinde de kontrol et
+            if($('#isCurrentlyWorking').is(':checked')) {
+                $('#endDate').prop('disabled', true);
+            }
+        });
+    </script>
+} 

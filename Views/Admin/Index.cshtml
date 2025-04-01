@@ -1,0 +1,108 @@
+@{
+    ViewData["Title"] = "Admin Dashboard";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="row">
+    <div class="col-md-3 mb-4">
+        <div class="card text-white bg-primary">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="card-title">Profil</h6>
+                        <h2 class="mb-0">1</h2>
+                    </div>
+                    <i class="fas fa-user fa-3x"></i>
+                </div>
+            </div>
+            <div class="card-footer d-flex align-items-center justify-content-between">
+                <a asp-action="EditProfile" class="text-white stretched-link text-decoration-none">Düzenle</a>
+                <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3 mb-4">
+        <div class="card text-white bg-success">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="card-title">Eğitim Bilgileri</h6>
+                        <h2 class="mb-0">@ViewBag.EducationCount</h2>
+                    </div>
+                    <i class="fas fa-graduation-cap fa-3x"></i>
+                </div>
+            </div>
+            <div class="card-footer d-flex align-items-center justify-content-between">
+                <a asp-action="Educations" class="text-white stretched-link text-decoration-none">Yönet</a>
+                <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3 mb-4">
+        <div class="card text-white bg-warning">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="card-title">İş Deneyimleri</h6>
+                        <h2 class="mb-0">@ViewBag.ExperienceCount</h2>
+                    </div>
+                    <i class="fas fa-briefcase fa-3x"></i>
+                </div>
+            </div>
+            <div class="card-footer d-flex align-items-center justify-content-between">
+                <a asp-action="Experiences" class="text-white stretched-link text-decoration-none">Yönet</a>
+                <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3 mb-4">
+        <div class="card text-white bg-danger">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="card-title">Yetenekler</h6>
+                        <h2 class="mb-0">@ViewBag.SkillCount</h2>
+                    </div>
+                    <i class="fas fa-code fa-3x"></i>
+                </div>
+            </div>
+            <div class="card-footer d-flex align-items-center justify-content-between">
+                <a asp-action="Skills" class="text-white stretched-link text-decoration-none">Yönet</a>
+                <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-6">
+        <div class="card mb-4">
+            <div class="card-header">
+                <i class="fas fa-info-circle me-1"></i>
+                Panel Bilgileri
+            </div>
+            <div class="card-body">
+                <p>Bu admin paneli üzerinden CV bilgilerinizi kolayca yönetebilirsiniz.</p>
+                <p>Soldaki menü üzerinden profil bilgilerinizi, eğitim, deneyim, yetenek ve sertifika bilgilerinizi düzenleyebilirsiniz.</p>
+                <p>Yaptığınız tüm değişiklikler anında CV sitenize yansıyacaktır.</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6">
+        <div class="card mb-4">
+            <div class="card-header">
+                <i class="fas fa-question-circle me-1"></i>
+                Yardım
+            </div>
+            <div class="card-body">
+                <p><strong>CV Sitenizi görüntülemek için:</strong> Sağ üst köşedeki "Siteyi Görüntüle" butonuna tıklayabilirsiniz.</p>
+                <p><strong>Profil resmi eklemek için:</strong> "Profil Düzenle" sayfasından dosya yükleme alanını kullanabilirsiniz.</p>
+                <p><strong>İçerikleri sıralamak için:</strong> Silip yeniden ekleyerek sıralama yapabilirsiniz.</p>
+            </div>
+        </div>
+    </div>
+</div> 

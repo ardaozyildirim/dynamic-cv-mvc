@@ -1,0 +1,70 @@
+@model DinamikCvSitesi.Models.Skill
+
+@{
+    ViewData["Title"] = "Yetenek Düzenle";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="card shadow-sm">
+    <div class="card-body">
+        <h5 class="card-title mb-4">Yetenek Düzenle</h5>
+        
+        <form asp-action="EditSkill" method="post">
+            <input type="hidden" asp-for="SkillID" />
+            <input type="hidden" asp-for="ProfileID" />
+            
+            <div class="mb-3">
+                <label asp-for="Name" class="form-label">Yetenek Adı</label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            
+            <div class="mb-3">
+                <label asp-for="Category" class="form-label">Kategori</label>
+                <select asp-for="Category" class="form-select">
+                    <option value="">Genel</option>
+                    <option value="Programlama">Programlama</option>
+                    <option value="Tasarım">Tasarım</option>
+                    <option value="Dil">Dil</option>
+                    <option value="Ofis">Ofis Programları</option>
+                    <option value="Diğer">Diğer</option>
+                </select>
+                <span asp-validation-for="Category" class="text-danger"></span>
+            </div>
+            
+            <div class="mb-3">
+                <label asp-for="Level" class="form-label">Seviye (1-100)</label>
+                <input type="range" asp-for="Level" class="form-range" min="1" max="100" id="levelSlider" />
+                <div class="d-flex justify-content-between">
+                    <span>Başlangıç</span>
+                    <span id="levelValue">50</span>
+                    <span>Uzman</span>
+                </div>
+                <span asp-validation-for="Level" class="text-danger"></span>
+            </div>
+            
+            <div class="text-end">
+                <a asp-action="Skills" class="btn btn-secondary">İptal</a>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save me-1"></i> Güncelle
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    
+    <script>
+        $(function() {
+            // Seviye slider değerini göster
+            $('#levelSlider').on('input', function() {
+                $('#levelValue').text($(this).val() + '%');
+            });
+            
+            // Sayfa yüklendiğinde mevcut değeri göster
+            $('#levelValue').text($('#levelSlider').val() + '%');
+        });
+    </script>
+} 

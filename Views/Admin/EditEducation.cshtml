@@ -1,0 +1,102 @@
+@model DinamikCvSitesi.Models.Education
+
+@{
+    ViewData["Title"] = "Eğitim Düzenle";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="card shadow-sm">
+    <div class="card-body">
+        <h5 class="card-title mb-4">Eğitim Düzenle</h5>
+        
+        <form asp-action="EditEducation" method="post">
+            <input type="hidden" asp-for="EducationID" />
+            <input type="hidden" asp-for="ProfileID" />
+            
+            <div class="mb-3">
+                <label asp-for="School" class="form-label">Okul</label>
+                <input asp-for="School" class="form-control" />
+                <span asp-validation-for="School" class="text-danger"></span>
+            </div>
+            
+            <div class="mb-3">
+                <label asp-for="Degree" class="form-label">Derece/Diploma</label>
+                <select asp-for="Degree" class="form-select">
+                    <option value="">Seçiniz</option>
+                    <option value="Lise Diploması">Lise Diploması</option>
+                    <option value="Ön Lisans">Ön Lisans</option>
+                    <option value="Lisans">Lisans</option>
+                    <option value="Yüksek Lisans">Yüksek Lisans</option>
+                    <option value="Doktora">Doktora</option>
+                    <option value="Sertifika">Sertifika Programı</option>
+                    <option value="Diğer">Diğer</option>
+                </select>
+                <span asp-validation-for="Degree" class="text-danger"></span>
+            </div>
+            
+            <div class="mb-3">
+                <label asp-for="FieldOfStudy" class="form-label">Bölüm/Alan</label>
+                <input asp-for="FieldOfStudy" class="form-control" />
+                <span asp-validation-for="FieldOfStudy" class="text-danger"></span>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label asp-for="StartDate" class="form-label">Başlangıç Tarihi</label>
+                        <input asp-for="StartDate" class="form-control" type="date" />
+                        <span asp-validation-for="StartDate" class="text-danger"></span>
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label asp-for="EndDate" class="form-label">Bitiş Tarihi</label>
+                        <input asp-for="EndDate" class="form-control" type="date" id="endDate" />
+                        <span asp-validation-for="EndDate" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mb-3 form-check">
+                <input asp-for="IsCurrentlyStudying" class="form-check-input" id="isCurrentlyStudying" />
+                <label asp-for="IsCurrentlyStudying" class="form-check-label">Eğitimim devam ediyor</label>
+            </div>
+            
+            <div class="mb-3">
+                <label asp-for="Description" class="form-label">Açıklama</label>
+                <textarea asp-for="Description" class="form-control" rows="4"></textarea>
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+            
+            <div class="text-end">
+                <a asp-action="Educations" class="btn btn-secondary">İptal</a>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save me-1"></i> Güncelle
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    
+    <script>
+        $(function() {
+            // Eğitimim devam ediyor seçeneği işaretlendiğinde bitiş tarihini devre dışı bırak
+            $('#isCurrentlyStudying').change(function() {
+                if($(this).is(':checked')) {
+                    $('#endDate').prop('disabled', true);
+                } else {
+                    $('#endDate').prop('disabled', false);
+                }
+            });
+            
+            // Sayfa yüklendiğinde de kontrol et
+            if($('#isCurrentlyStudying').is(':checked')) {
+                $('#endDate').prop('disabled', true);
+            }
+        });
+    </script>
+} 
