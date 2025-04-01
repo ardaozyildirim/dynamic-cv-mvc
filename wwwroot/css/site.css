@@ -260,7 +260,7 @@ section .container {
 }
 
 .fade-in {
-  animation: fadeIn 0.5s ease-in-out;
+  animation: fadeIn 1s ease-in-out;
 }
 
 /* Responsive */

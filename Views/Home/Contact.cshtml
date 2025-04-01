@@ -2,100 +2,161 @@
     ViewData["Title"] = "İletişim";
 }
 
-<div class="row">
-    <div class="col-lg-12">
-        <h1 class="display-4 mb-4">İletişim</h1>
-    </div>
-</div>
-
-<div class="row">
-    <div class="col-md-6 mb-4">
-        <div class="card border-0 shadow-sm h-100">
-            <div class="card-body">
-                <h4 class="mb-4"><i class="fas fa-envelope me-2"></i> İletişim Formu</h4>
-                
-                @if (ViewBag.Success != null)
-                {
-                    <div class="alert alert-success">
-                        <i class="fas fa-check-circle me-2"></i> @ViewBag.Success
-                    </div>
-                }
-                
-                <form>
-                    <div class="mb-3">
-                        <label for="name" class="form-label">Adınız Soyadınız</label>
-                        <input type="text" class="form-control" id="name" name="name" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="email" class="form-label">E-Posta Adresiniz</label>
-                        <input type="email" class="form-control" id="email" name="email" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="subject" class="form-label">Konu</label>
-                        <input type="text" class="form-control" id="subject" name="subject" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="message" class="form-label">Mesajınız</label>
-                        <textarea class="form-control" id="message" name="message" rows="5" required></textarea>
-                    </div>
-                    <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-paper-plane me-1"></i> Mesaj Gönder
-                    </button>
-                </form>
+<!-- Page Header -->
+<section class="page-header bg-light py-5 mb-5 fade-in">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12 text-center">
+                <h1 class="display-4 fw-bold mb-3">İletişim</h1>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb justify-content-center">
+                        <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index" class="text-decoration-none">Anasayfa</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">İletişim</li>
+                    </ol>
+                </nav>
             </div>
         </div>
     </div>
-    
-    <div class="col-md-6 mb-4">
-        <div class="card border-0 shadow-sm mb-4">
-            <div class="card-body">
-                <h4 class="mb-4"><i class="fas fa-map-marker-alt me-2"></i> İletişim Bilgileri</h4>
-                
-                <ul class="list-unstyled">
-                    <li class="d-flex mb-4">
-                        <div class="flex-shrink-0">
-                            <i class="fas fa-envelope text-primary fa-2x me-3"></i>
+</section>
+
+<div class="container fade-in">
+    <div class="row">
+        <div class="col-md-6 mb-4">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-header bg-primary text-white p-3">
+                    <h5 class="mb-0"><i class="fas fa-paper-plane me-2"></i> İletişim Formu</h5>
+                </div>
+                <div class="card-body p-4">
+                    @if (ViewBag.Success != null)
+                    {
+                        <div class="alert alert-success">
+                            <i class="fas fa-check-circle me-2"></i> @ViewBag.Success
                         </div>
-                        <div>
-                            <h5>E-posta</h5>
-                            <p>ornek@email.com</p>
+                    }
+                    
+                    <form>
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Adınız Soyadınız</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-user"></i></span>
+                                <input type="text" class="form-control" id="name" name="name" required>
+                            </div>
                         </div>
-                    </li>
-                    <li class="d-flex mb-4">
-                        <div class="flex-shrink-0">
-                            <i class="fas fa-phone text-primary fa-2x me-3"></i>
+                        <div class="mb-3">
+                            <label for="email" class="form-label">E-Posta Adresiniz</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                                <input type="email" class="form-control" id="email" name="email" required>
+                            </div>
                         </div>
-                        <div>
-                            <h5>Telefon</h5>
-                            <p>+90 555 123 45 67</p>
+                        <div class="mb-3">
+                            <label for="subject" class="form-label">Konu</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-tag"></i></span>
+                                <input type="text" class="form-control" id="subject" name="subject" required>
+                            </div>
                         </div>
-                    </li>
-                    <li class="d-flex mb-4">
-                        <div class="flex-shrink-0">
-                            <i class="fas fa-map-marker-alt text-primary fa-2x me-3"></i>
+                        <div class="mb-3">
+                            <label for="message" class="form-label">Mesajınız</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-comment"></i></span>
+                                <textarea class="form-control" id="message" name="message" rows="5" required></textarea>
+                            </div>
                         </div>
-                        <div>
-                            <h5>Adres</h5>
-                            <p>İstanbul, Türkiye</p>
-                        </div>
-                    </li>
-                </ul>
-                
-                <hr />
-                
-                <h5 class="mb-3">Sosyal Medya</h5>
-                <div class="d-flex">
-                    <a href="#" class="btn btn-outline-primary me-2">
-                        <i class="fab fa-linkedin"></i>
-                    </a>
-                    <a href="#" class="btn btn-outline-dark me-2">
-                        <i class="fab fa-github"></i>
-                    </a>
-                    <a href="#" class="btn btn-outline-info">
-                        <i class="fab fa-twitter"></i>
-                    </a>
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="fas fa-paper-plane me-2"></i> Mesaj Gönder
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6 mb-4">
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header bg-primary text-white p-3">
+                    <h5 class="mb-0"><i class="fas fa-map-marker-alt me-2"></i> İletişim Bilgileri</h5>
+                </div>
+                <div class="card-body p-4">
+                    <ul class="list-unstyled">
+                        <li class="d-flex mb-4">
+                            <div class="flex-shrink-0">
+                                <div class="bg-primary bg-opacity-10 rounded-circle p-3">
+                                    <i class="fas fa-envelope text-primary fa-2x"></i>
+                                </div>
+                            </div>
+                            <div class="ms-4">
+                                <h5 class="fw-bold">E-posta</h5>
+                                <p class="mb-0">ornek@email.com</p>
+                            </div>
+                        </li>
+                        <li class="d-flex mb-4">
+                            <div class="flex-shrink-0">
+                                <div class="bg-primary bg-opacity-10 rounded-circle p-3">
+                                    <i class="fas fa-phone text-primary fa-2x"></i>
+                                </div>
+                            </div>
+                            <div class="ms-4">
+                                <h5 class="fw-bold">Telefon</h5>
+                                <p class="mb-0">+90 555 123 45 67</p>
+                            </div>
+                        </li>
+                        <li class="d-flex mb-4">
+                            <div class="flex-shrink-0">
+                                <div class="bg-primary bg-opacity-10 rounded-circle p-3">
+                                    <i class="fas fa-map-marker-alt text-primary fa-2x"></i>
+                                </div>
+                            </div>
+                            <div class="ms-4">
+                                <h5 class="fw-bold">Adres</h5>
+                                <p class="mb-0">İstanbul, Türkiye</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-primary text-white p-3">
+                    <h5 class="mb-0"><i class="fas fa-share-alt me-2"></i> Sosyal Medya</h5>
+                </div>
+                <div class="card-body p-4">
+                    <p class="mb-3">Sosyal medya hesaplarımdan da bana ulaşabilirsiniz.</p>
+                    <div class="d-flex gap-2">
+                        <a href="#" class="btn btn-outline-primary btn-lg flex-grow-1">
+                            <i class="fab fa-linkedin"></i>
+                        </a>
+                        <a href="#" class="btn btn-outline-dark btn-lg flex-grow-1">
+                            <i class="fab fa-github"></i>
+                        </a>
+                        <a href="#" class="btn btn-outline-info btn-lg flex-grow-1">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div> 
+</div>
+
+<!-- Map Section -->
+<section class="section bg-light py-5 mt-5 fade-in">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-12 text-center mb-5">
+                <h2 class="mb-4">Beni Haritada Bulun</h2>
+                <p class="lead mb-0">Aşağıdaki haritadan konumuma ulaşabilirsiniz.</p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body p-0">
+                        <div class="ratio ratio-21x9">
+                            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d192698.6712100238!2d28.872096739521566!3d41.005495605866615!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x14caa7040068086b%3A0xe1ccfe98bc01b0d0!2zxLBzdGFuYnVs!5e0!3m2!1str!2str!4v1650000000000!5m2!1str!2str" allowfullscreen="" loading="lazy"></iframe>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section> 

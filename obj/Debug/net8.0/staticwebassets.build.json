@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "Z7vFSpgPqveYfYTNNRGu3JuqIGgXbIfuiKbANnxoYo0=",
+  "Hash": "udjgh4CaXTo+rHMfkPrXRSl714K3jkICgNBH9TpX5zU=",
   "Source": "DinamikCvSitesi",
   "BasePath": "_content/DinamikCvSitesi",
   "Mode": "Default",
@@ -129,6 +129,25 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\images\\10cbd977-a350-4a0d-9023-48d23f9654d4.webp"
+    },
+    {
+      "Identity": "C:\\Users\\hp\\Documents\\Projects\\DinamikCvSitesi\\wwwroot\\images\\23a32413-e4f3-4c1b-881b-8e7a75ca0ff0.webp",
+      "SourceId": "DinamikCvSitesi",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\hp\\Documents\\Projects\\DinamikCvSitesi\\wwwroot\\",
+      "BasePath": "_content/DinamikCvSitesi",
+      "RelativePath": "images/23a32413-e4f3-4c1b-881b-8e7a75ca0ff0.webp",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\images\\23a32413-e4f3-4c1b-881b-8e7a75ca0ff0.webp"
     },
     {
       "Identity": "C:\\Users\\hp\\Documents\\Projects\\DinamikCvSitesi\\wwwroot\\js\\site.js",

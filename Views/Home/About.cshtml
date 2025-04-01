@@ -4,100 +4,140 @@
     ViewData["Title"] = "Hakkımda";
 }
 
-<div class="row">
-    <div class="col-lg-12">
-        <h1 class="display-4 mb-4">Hakkımda</h1>
+<!-- Page Header -->
+<section class="page-header bg-light py-5 mb-5 fade-in">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12 text-center">
+                <h1 class="display-4 fw-bold mb-3">Hakkımda</h1>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb justify-content-center">
+                        <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index" class="text-decoration-none">Anasayfa</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Hakkımda</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="container fade-in">
+    <div class="row">
+        <div class="col-lg-4 mb-4">
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-body text-center py-4">
+                    @if (!string.IsNullOrEmpty(Model.ImagePath))
+                    {
+                        <img class="img-fluid profile-img mx-auto d-block mb-4" src="@Model.ImagePath" alt="@Model.FullName" style="max-width: 180px;" />
+                    }
+                    else
+                    {
+                        <img class="img-fluid profile-img mx-auto d-block mb-4" src="~/images/profile-placeholder.jpg" alt="@Model.FullName" style="max-width: 180px;" />
+                    }
+                    <h3 class="fw-bold">@Model.FullName</h3>
+                    <p class="text-muted mb-3">@Model.Title</p>
+
+                    <div class="d-flex justify-content-center gap-3 my-4">
+                        @if (!string.IsNullOrEmpty(Model.LinkedIn))
+                        {
+                            <a href="@Model.LinkedIn" target="_blank" class="btn btn-outline-primary" title="LinkedIn">
+                                <i class="fab fa-linkedin"></i>
+                            </a>
+                        }
+                        @if (!string.IsNullOrEmpty(Model.GitHub))
+                        {
+                            <a href="@Model.GitHub" target="_blank" class="btn btn-outline-dark" title="GitHub">
+                                <i class="fab fa-github"></i>
+                            </a>
+                        }
+                        @if (!string.IsNullOrEmpty(Model.Twitter))
+                        {
+                            <a href="@Model.Twitter" target="_blank" class="btn btn-outline-info" title="Twitter">
+                                <i class="fab fa-twitter"></i>
+                            </a>
+                        }
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-primary text-white p-3">
+                    <h5 class="mb-0"><i class="fas fa-id-card me-2"></i> İletişim Bilgileri</h5>
+                </div>
+                <div class="card-body p-4">
+                    <ul class="list-unstyled">
+                        @if (!string.IsNullOrEmpty(Model.Email))
+                        {
+                            <li class="mb-3 d-flex align-items-center">
+                                <i class="fas fa-envelope me-3 text-primary"></i>
+                                <span>@Model.Email</span>
+                            </li>
+                        }
+                        @if (!string.IsNullOrEmpty(Model.Phone))
+                        {
+                            <li class="mb-3 d-flex align-items-center">
+                                <i class="fas fa-phone me-3 text-primary"></i>
+                                <span>@Model.Phone</span>
+                            </li>
+                        }
+                        @if (!string.IsNullOrEmpty(Model.Address))
+                        {
+                            <li class="mb-3 d-flex align-items-center">
+                                <i class="fas fa-map-marker-alt me-3 text-primary"></i>
+                                <span>@Model.Address</span>
+                            </li>
+                        }
+                    </ul>
+
+                    <a href="@Url.Action("Contact", "Home")" class="btn btn-primary w-100 mt-3">
+                        <i class="fas fa-envelope me-2"></i> İletişime Geç
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header bg-primary text-white p-3">
+                    <h5 class="mb-0"><i class="fas fa-user me-2"></i> Kişisel Bilgiler</h5>
+                </div>
+                <div class="card-body p-4">
+                    <h2 class="card-title mb-4">@Model.FullName</h2>
+                    <div class="mb-4">
+                        <h5 class="text-primary mb-3"><i class="fas fa-quote-left me-2"></i> Özet</h5>
+                        <p class="lead">@Model.Summary</p>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <h5 class="text-primary mb-3"><i class="fas fa-info-circle me-2"></i> Hakkımda</h5>
+                        <p>@Html.Raw(Model.AboutMe?.Replace(Environment.NewLine, "<br />"))</p>
+                    </div>
+                    
+                    <div class="mt-4">
+                        <a asp-controller="Home" asp-action="Resume" class="btn btn-primary">
+                            <i class="fas fa-file-alt me-2"></i> Özgeçmişim
+                        </a>
+                        <a asp-controller="Home" asp-action="Contact" class="btn btn-outline-primary ms-2">
+                            <i class="fas fa-envelope me-2"></i> İletişime Geç
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
-<div class="row">
-    <div class="col-lg-4 mb-4">
-        @if (!string.IsNullOrEmpty(Model.ImagePath))
-        {
-            <img class="img-fluid rounded" src="@Model.ImagePath" alt="@Model.FullName" />
-        }
-        else
-        {
-            <img class="img-fluid rounded" src="~/images/profile-placeholder.jpg" alt="@Model.FullName" />
-        }
-        
-        <div class="card mt-4">
-            <div class="card-header">
-                <i class="fas fa-id-card me-2"></i> İletişim Bilgileri
-            </div>
-            <div class="card-body">
-                <ul class="list-unstyled">
-                    @if (!string.IsNullOrEmpty(Model.Email))
-                    {
-                        <li class="mb-2">
-                            <i class="fas fa-envelope me-2 text-primary"></i> @Model.Email
-                        </li>
-                    }
-                    @if (!string.IsNullOrEmpty(Model.Phone))
-                    {
-                        <li class="mb-2">
-                            <i class="fas fa-phone me-2 text-primary"></i> @Model.Phone
-                        </li>
-                    }
-                    @if (!string.IsNullOrEmpty(Model.Address))
-                    {
-                        <li class="mb-2">
-                            <i class="fas fa-map-marker-alt me-2 text-primary"></i> @Model.Address
-                        </li>
-                    }
-                </ul>
-
-                <div class="mt-3">
-                    @if (!string.IsNullOrEmpty(Model.LinkedIn))
-                    {
-                        <a href="@Model.LinkedIn" target="_blank" class="btn btn-sm btn-outline-primary me-2">
-                            <i class="fab fa-linkedin"></i>
-                        </a>
-                    }
-                    @if (!string.IsNullOrEmpty(Model.GitHub))
-                    {
-                        <a href="@Model.GitHub" target="_blank" class="btn btn-sm btn-outline-dark me-2">
-                            <i class="fab fa-github"></i>
-                        </a>
-                    }
-                    @if (!string.IsNullOrEmpty(Model.Twitter))
-                    {
-                        <a href="@Model.Twitter" target="_blank" class="btn btn-sm btn-outline-info">
-                            <i class="fab fa-twitter"></i>
-                        </a>
-                    }
-                </div>
+<!-- Call to Action -->
+<section class="section bg-light py-5 mt-5 text-center fade-in">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <h2 class="mb-4">Benimle Çalışmak İster misiniz?</h2>
+                <p class="lead mb-4">Projeleriniz için profesyonel çözümler sunabilirim. Hemen iletişime geçin!</p>
+                <a href="@Url.Action("Contact", "Home")" class="btn btn-primary px-4 py-2">
+                    <i class="fas fa-paper-plane me-2"></i> İletişime Geç
+                </a>
             </div>
         </div>
     </div>
-    
-    <div class="col-lg-8">
-        <div class="card mb-4">
-            <div class="card-body">
-                <h2 class="card-title mb-3">@Model.FullName</h2>
-                <h5 class="text-secondary mb-3">@Model.Title</h5>
-                
-                <hr />
-                
-                <div class="mb-4">
-                    <h4><i class="fas fa-info-circle me-2"></i> Kişisel Bilgiler</h4>
-                    <p class="lead">@Model.Summary</p>
-                </div>
-                
-                <div class="mb-4">
-                    <h4><i class="fas fa-user me-2"></i> Hakkımda</h4>
-                    <p>@Html.Raw(Model.AboutMe?.Replace(Environment.NewLine, "<br />"))</p>
-                </div>
-                
-                <div class="mt-4">
-                    <a asp-controller="Home" asp-action="Resume" class="btn btn-primary">
-                        <i class="fas fa-file-alt me-1"></i> Özgeçmişim
-                    </a>
-                    <a asp-controller="Home" asp-action="Contact" class="btn btn-outline-secondary ms-2">
-                        <i class="fas fa-envelope me-1"></i> İletişime Geç
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
-</div> 
+</section> 
