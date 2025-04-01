@@ -1,79 +1,79 @@
-# DinamikCvSitesi - Dinamik CV/Resume Web Sitesi
+# DinamikCvSitesi - Dynamic CV/Resume Website
 
-Bu proje kişisel CV/Resume sitesi olarak tasarlanmış dinamik bir ASP.NET Core MVC uygulamasıdır. Kullanıcılar site üzerinden kişisel bilgilerini, deneyimlerini, eğitimlerini, yeteneklerini ve sertifikalarını yönetebilirler.
+This project is a dynamic ASP.NET Core MVC application designed as a personal CV/Resume website. Users can manage their personal information, experiences, education, skills, and certificates through the site.
 
-## Güvenlik Geliştirmeleri
+## Security Enhancements
 
-Projede aşağıdaki güvenlik önlemleri uygulanmıştır:
+The following security measures have been implemented in the project:
 
-### Program.cs'deki Güvenlik Yapılandırmaları
+### Security Configurations in Program.cs
 
-- **Çerez Güvenliği**: HttpOnly, SameSite ve Secure politikaları ortama bağlı olarak yapılandırıldı.
-- **Oturum Yönetimi**: 30 dakikalık zaman aşımı süresi ile güvenli oturum yönetimi.
-- **XSS Koruması**: X-XSS-Protection başlıkları eklendi.
-- **Content Type Sniffing Koruması**: X-Content-Type-Options nosniff başlıkları eklendi.
-- **Clickjacking Koruması**: X-Frame-Options başlıkları eklendi.
-- **Antiforgery Token Koruması**: CSRF saldırılarına karşı tüm formlar korundu.
-- **SSL/HTTPS Yapılandırması**: 
-  - Geliştirme ortamında HTTP izni verildi
-  - Üretim ortamında HTTPS zorunlu kılındı ve HSTS eklendi.
-- **Content Security Policy**: Üretim ortamında script, style, font ve resim kaynakları için güvenlik politikaları tanımlandı.
+- **Cookie Security**: HttpOnly, SameSite, and Secure policies configured based on the environment.
+- **Session Management**: Secure session management with a 30-minute timeout.
+- **XSS Protection**: X-XSS-Protection headers added.
+- **Content Type Sniffing Protection**: X-Content-Type-Options nosniff headers added.
+- **Clickjacking Protection**: X-Frame-Options headers added.
+- **Antiforgery Token Protection**: All forms protected against CSRF attacks.
+- **SSL/HTTPS Configuration**: 
+  - HTTP allowed in development environment
+  - HTTPS enforced in production environment with HSTS enabled.
+- **Content Security Policy**: Security policies defined for scripts, styles, fonts, and image sources in production environment.
 
-### Kimlik Doğrulama ve Yetkilendirme
+### Authentication and Authorization
 
-- **Cookie Tabanlı Kimlik Doğrulama**: Güvenli cookie ayarları ile kimlik doğrulama.
-- **Rol Tabanlı Yetkilendirme**: Admin rolü için özel erişim kontrolleri.
-- **Şifre Güvenliği**: SHA-256 ile şifre hashleme.
+- **Cookie-Based Authentication**: Authentication with secure cookie settings.
+- **Role-Based Authorization**: Special access controls for the Admin role.
+- **Password Security**: Password hashing with SHA-256.
 
-### Diğer Güvenlik Önlemleri
+### Other Security Measures
 
-- **Dosya Yükleme Güvenliği**: Profil resmi yüklemede güvenlik kontrolleri.
-- **Giriş/Çıkış İşlemleri**: Güvenli oturum açma ve kapatma süreçleri.
-- **Validator Kontrolleri**: Tüm formlar için sunucu taraflı doğrulama.
-- **Hata Yönetimi**: Güvenli hata yakalama ve loglama.
+- **File Upload Security**: Security controls for profile image uploads.
+- **Login/Logout Operations**: Secure session start and end processes.
+- **Validator Controls**: Server-side validation for all forms.
+- **Error Management**: Secure error handling and logging.
 
-## Admin Paneli Giriş Bilgileri
+## Admin Panel Login Information
 
-Admin paneline erişim için aşağıdaki kullanıcı bilgilerini kullanabilirsiniz:
+You can use the following user credentials to access the admin panel:
 
-**Varsayılan Admin:**
-- Kullanıcı Adı: admin
-- Şifre: Admin123!
+**Default Admin:**
+- Username: admin
+- Password: Admin123!
 
-**Test Kullanıcısı:**
-- Kullanıcı Adı: test
-- Şifre: test123
+**Test User:**
+- Username: test
+- Password: test123
 
-## Proje Özellikleri
+## Project Features
 
-- **Anasayfa**: Kişisel özet bilgileri ve yetenekler.
-- **Resume/CV Sayfası**: Eğitim, deneyim, yetenek ve sertifika bilgilerinin görüntülenmesi.
-- **Hakkımda Sayfası**: Detaylı kişisel bilgiler.
-- **İletişim Sayfası**: İletişim bilgileri.
-- **Admin Paneli**:
-  - Profil bilgilerini düzenleme
-  - Eğitim bilgilerini yönetme
-  - Deneyim bilgilerini yönetme
-  - Yetenekleri yönetme
-  - Sertifikaları yönetme
+- **Homepage**: Personal summary information and skills.
+- **Resume/CV Page**: Display of education, experience, skills, and certificate information.
+- **About Me Page**: Detailed personal information.
+- **Contact Page**: Contact information.
+- **Admin Panel**:
+  - Edit profile information
+  - Manage education information
+  - Manage experience information
+  - Manage skills
+  - Manage certificates
 
-## Teknik Bilgiler
+## Technical Information
 
 - **Framework**: ASP.NET Core 8.0 MVC
-- **Veritabanı**: SQLite
+- **Database**: SQLite
 - **ORM**: Entity Framework Core
 - **Frontend**: Bootstrap 5, CSS, JavaScript
-- **Deployment**: Herhangi bir web sunucusunda çalışabilir
+- **Deployment**: Can run on any web server
 
-## Kurulum
+## Installation
 
-1. Repoyu klonlayın
-2. `dotnet restore` komutu ile paketleri yükleyin
-3. `dotnet run` komutu ile uygulamayı çalıştırın
-4. Tarayıcınızdan `http://localhost:5000` adresine gidin
+1. Clone the repository
+2. Install packages with the `dotnet restore` command
+3. Run the application with the `dotnet run` command
+4. Go to `http://localhost:5000` in your browser
 
-## Geliştirme Notları
+## Development Notes
 
-Geliştirme ortamında çalışırken:
-- SSL gerektiren güvenlik önlemleri otomatik olarak devre dışı bırakılır
-- Üretim ortamına geçişte tüm güvenlik önlemleri aktif hale gelir 
+When working in the development environment:
+- SSL-requiring security measures are automatically disabled
+- All security measures become active when transitioning to the production environment 
