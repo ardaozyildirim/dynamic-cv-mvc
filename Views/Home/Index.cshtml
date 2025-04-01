@@ -4,65 +4,144 @@
     ViewData["Title"] = "Ana Sayfa";
 }
 
-<div class="row align-items-center my-5">
-    <div class="col-lg-4">
-        @if (!string.IsNullOrEmpty(Model.ImagePath))
-        {
-            <img class="img-fluid rounded-circle" src="@Model.ImagePath" alt="@Model.FullName" style="max-width: 300px;" />
-        }
-        else
-        {
-            <img class="img-fluid rounded-circle" src="~/images/profile-placeholder.jpg" alt="@Model.FullName" style="max-width: 300px;" />
-        }
-    </div>
-    <div class="col-lg-8">
-        <h1 class="display-4">@Model.FullName</h1>
-        <h3 class="text-secondary">@Model.Title</h3>
-        <hr />
-        <p class="lead">@Model.Summary</p>
-        <div class="mt-4">
-            <a href="@Url.Action("Resume", "Home")" class="btn btn-primary me-2">
-                <i class="fas fa-file-alt me-1"></i> Özgeçmişimi Görüntüle
-            </a>
-            <a href="@Url.Action("Contact", "Home")" class="btn btn-outline-secondary">
-                <i class="fas fa-envelope me-1"></i> İletişime Geç
-            </a>
+<!-- Hero Section -->
+<section class="hero-section py-5 mb-5 fade-in">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6 mb-5 mb-lg-0">
+                <h1 class="display-4 fw-bold mb-4">Merhaba, Ben <span class="text-primary">@Model.FullName</span></h1>
+                <h3 class="fw-light text-secondary mb-4">@Model.Title</h3>
+                <p class="lead mb-4">@Model.Summary</p>
+                <div class="d-flex gap-3">
+                    <a href="@Url.Action("Resume", "Home")" class="btn btn-primary">
+                        <i class="fas fa-file-alt me-2"></i> Özgeçmişimi Görüntüle
+                    </a>
+                    <a href="@Url.Action("Contact", "Home")" class="btn btn-outline-dark">
+                        <i class="fas fa-envelope me-2"></i> İletişime Geç
+                    </a>
+                </div>
+                
+                <div class="mt-5">
+                    <div class="d-flex gap-4">
+                        @if (!string.IsNullOrEmpty(Model.LinkedIn))
+                        {
+                            <a href="@Model.LinkedIn" target="_blank" class="social-icon" title="LinkedIn">
+                                <i class="fab fa-linkedin fa-2x text-primary"></i>
+                            </a>
+                        }
+                        @if (!string.IsNullOrEmpty(Model.GitHub))
+                        {
+                            <a href="@Model.GitHub" target="_blank" class="social-icon" title="GitHub">
+                                <i class="fab fa-github fa-2x"></i>
+                            </a>
+                        }
+                        @if (!string.IsNullOrEmpty(Model.Twitter))
+                        {
+                            <a href="@Model.Twitter" target="_blank" class="social-icon" title="Twitter">
+                                <i class="fab fa-twitter fa-2x text-info"></i>
+                            </a>
+                        }
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 text-center">
+                @if (!string.IsNullOrEmpty(Model.ImagePath))
+                {
+                    <img class="img-fluid profile-img mx-auto d-block" src="@Model.ImagePath" alt="@Model.FullName" style="max-width: 400px;" />
+                }
+                else
+                {
+                    <img class="img-fluid profile-img mx-auto d-block" src="~/images/profile-placeholder.jpg" alt="@Model.FullName" style="max-width: 400px;" />
+                }
+            </div>
         </div>
-        <div class="mt-4">
-            @if (!string.IsNullOrEmpty(Model.LinkedIn))
-            {
-                <a href="@Model.LinkedIn" target="_blank" class="text-decoration-none me-3" title="LinkedIn">
-                    <i class="fab fa-linkedin fa-2x text-primary"></i>
-                </a>
-            }
-            @if (!string.IsNullOrEmpty(Model.GitHub))
-            {
-                <a href="@Model.GitHub" target="_blank" class="text-decoration-none me-3" title="GitHub">
-                    <i class="fab fa-github fa-2x text-dark"></i>
-                </a>
-            }
-            @if (!string.IsNullOrEmpty(Model.Twitter))
-            {
-                <a href="@Model.Twitter" target="_blank" class="text-decoration-none" title="Twitter">
-                    <i class="fab fa-twitter fa-2x text-info"></i>
-                </a>
-            }
-        </div>
     </div>
-</div>
+</section>
 
-<div class="row mt-5">
-    <div class="col-lg-12">
-        <div class="card shadow-sm">
-            <div class="card-body">
-                <h4 class="card-title">
-                    <i class="fas fa-user me-2"></i> Hakkımda
-                </h4>
-                <p class="card-text">@Model.AboutMe</p>
-                <a asp-controller="Home" asp-action="About" class="btn btn-sm btn-outline-primary">
-                    Daha fazla
+<!-- About Section -->
+<section class="section bg-light py-5 fade-in">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <h2 class="section-title">Hakkımda</h2>
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body p-4">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <p>@Model.AboutMe</p>
+                                <a asp-controller="Home" asp-action="About" class="btn btn-outline-primary mt-3">
+                                    <i class="fas fa-arrow-right me-2"></i> Daha Fazla Bilgi
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Skills Preview Section -->
+<section class="section py-5 fade-in">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <h2 class="section-title">Yeteneklerim</h2>
+                
+                @if (ViewBag.Skills != null && ViewBag.Skills.Count > 0)
+                {
+                    var skills = ViewBag.Skills as System.Collections.Generic.List<DinamikCvSitesi.Models.Skill>;
+                    var topSkills = skills.OrderByDescending(s => s.Level).Take(5).ToList();
+                    
+                    <div class="row">
+                        @foreach (var skill in topSkills)
+                        {
+                            <div class="col-md-6 mb-4">
+                                <div class="card border-0 shadow-sm h-100">
+                                    <div class="card-body p-4">
+                                        <h5 class="card-title">@skill.Name</h5>
+                                        <div class="d-flex justify-content-between mb-2">
+                                            <small class="text-muted">@skill.Category</small>
+                                            <small class="fw-bold">@skill.Level%</small>
+                                        </div>
+                                        <div class="progress">
+                                            <div class="progress-bar" role="progressbar" style="width: @skill.Level%;" 
+                                                 aria-valuenow="@skill.Level" aria-valuemin="0" aria-valuemax="100"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                    
+                    <div class="text-center mt-4">
+                        <a asp-controller="Home" asp-action="Resume" class="btn btn-outline-primary">
+                            <i class="fas fa-list me-2"></i> Tüm Yeteneklerimi Gör
+                        </a>
+                    </div>
+                }
+                else
+                {
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle me-2"></i> Henüz yetenek bilgisi girilmemiş.
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Call to Action -->
+<section class="section bg-primary text-white py-5 text-center fade-in">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <h2 class="mb-4">Benimle Çalışmak İster misiniz?</h2>
+                <p class="lead mb-4">Projeleriniz için profesyonel çözümler sunabilirim. Hemen iletişime geçin!</p>
+                <a href="@Url.Action("Contact", "Home")" class="btn btn-light px-4 py-2">
+                    <i class="fas fa-paper-plane me-2"></i> İletişime Geç
                 </a>
             </div>
         </div>
     </div>
-</div>
+</section>

@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "dAMgruu/elD3n/1TfvI4mRDeGKO2Yb6+WxdUTc2MzZE=",
+  "Hash": "Z7vFSpgPqveYfYTNNRGu3JuqIGgXbIfuiKbANnxoYo0=",
   "Source": "DinamikCvSitesi",
   "BasePath": "_content/DinamikCvSitesi",
   "Mode": "Default",
@@ -110,6 +110,25 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\favicon.ico"
+    },
+    {
+      "Identity": "C:\\Users\\hp\\Documents\\Projects\\DinamikCvSitesi\\wwwroot\\images\\10cbd977-a350-4a0d-9023-48d23f9654d4.webp",
+      "SourceId": "DinamikCvSitesi",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\hp\\Documents\\Projects\\DinamikCvSitesi\\wwwroot\\",
+      "BasePath": "_content/DinamikCvSitesi",
+      "RelativePath": "images/10cbd977-a350-4a0d-9023-48d23f9654d4.webp",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\images\\10cbd977-a350-4a0d-9023-48d23f9654d4.webp"
     },
     {
       "Identity": "C:\\Users\\hp\\Documents\\Projects\\DinamikCvSitesi\\wwwroot\\js\\site.js",

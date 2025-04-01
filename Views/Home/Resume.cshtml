@@ -4,193 +4,232 @@
     ViewData["Title"] = "Özgeçmiş";
 }
 
-<div class="row">
-    <div class="col-lg-12">
-        <h1 class="display-4 mb-4">Özgeçmiş</h1>
+<!-- Page Header -->
+<section class="page-header bg-light py-5 mb-5 fade-in">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12 text-center">
+                <h1 class="display-4 fw-bold mb-3">Profesyonel Özgeçmiş</h1>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb justify-content-center">
+                        <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index" class="text-decoration-none">Anasayfa</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Özgeçmiş</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
     </div>
-</div>
+</section>
 
-<div class="row">
-    <div class="col-md-4 mb-4">
-        <div class="card border-0 shadow-sm mb-4">
-            <div class="card-body text-center">
-                @if (!string.IsNullOrEmpty(Model.ImagePath))
-                {
-                    <img class="img-fluid rounded-circle mb-3" src="@Model.ImagePath" alt="@Model.FullName" style="max-width: 150px;" />
-                }
-                else
-                {
-                    <img class="img-fluid rounded-circle mb-3" src="~/images/profile-placeholder.jpg" alt="@Model.FullName" style="max-width: 150px;" />
-                }
-                <h4>@Model.FullName</h4>
-                <p class="text-muted">@Model.Title</p>
-                <hr />
-                <div class="d-flex justify-content-center">
-                    @if (!string.IsNullOrEmpty(Model.LinkedIn))
+<div class="container fade-in">
+    <div class="row">
+        <!-- Profile Sidebar -->
+        <div class="col-md-4 mb-5">
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-body text-center py-5">
+                    @if (!string.IsNullOrEmpty(Model.ImagePath))
                     {
-                        <a href="@Model.LinkedIn" target="_blank" class="btn btn-sm btn-outline-primary mx-1">
-                            <i class="fab fa-linkedin"></i>
-                        </a>
+                        <img class="img-fluid profile-img mb-4" src="@Model.ImagePath" alt="@Model.FullName" style="max-width: 180px;" />
                     }
-                    @if (!string.IsNullOrEmpty(Model.GitHub))
+                    else
                     {
-                        <a href="@Model.GitHub" target="_blank" class="btn btn-sm btn-outline-dark mx-1">
-                            <i class="fab fa-github"></i>
-                        </a>
+                        <img class="img-fluid profile-img mb-4" src="~/images/profile-placeholder.jpg" alt="@Model.FullName" style="max-width: 180px;" />
                     }
-                    @if (!string.IsNullOrEmpty(Model.Twitter))
+                    <h3 class="fw-bold">@Model.FullName</h3>
+                    <p class="text-muted mb-3">@Model.Title</p>
+                    <hr class="my-4" />
+                    <div class="d-flex justify-content-center gap-3">
+                        @if (!string.IsNullOrEmpty(Model.LinkedIn))
+                        {
+                            <a href="@Model.LinkedIn" target="_blank" class="btn btn-outline-primary" title="LinkedIn">
+                                <i class="fab fa-linkedin"></i>
+                            </a>
+                        }
+                        @if (!string.IsNullOrEmpty(Model.GitHub))
+                        {
+                            <a href="@Model.GitHub" target="_blank" class="btn btn-outline-dark" title="GitHub">
+                                <i class="fab fa-github"></i>
+                            </a>
+                        }
+                        @if (!string.IsNullOrEmpty(Model.Twitter))
+                        {
+                            <a href="@Model.Twitter" target="_blank" class="btn btn-outline-info" title="Twitter">
+                                <i class="fab fa-twitter"></i>
+                            </a>
+                        }
+                    </div>
+                    <a href="@Url.Action("Contact", "Home")" class="btn btn-primary w-100 mt-4">
+                        <i class="fas fa-envelope me-2"></i> İletişime Geç
+                    </a>
+                </div>
+            </div>
+
+            <!-- Skills Section -->
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-primary text-white p-3">
+                    <h5 class="mb-0"><i class="fas fa-code me-2"></i> Yetenekler</h5>
+                </div>
+                <div class="card-body p-4">
+                    @if (ViewBag.Skills != null && ViewBag.Skills.Count > 0)
                     {
-                        <a href="@Model.Twitter" target="_blank" class="btn btn-sm btn-outline-info mx-1">
-                            <i class="fab fa-twitter"></i>
-                        </a>
+                        var skillGroups = ViewBag.Skills as System.Collections.Generic.List<DinamikCvSitesi.Models.Skill>;
+                        
+                        foreach (var group in skillGroups.GroupBy(s => s.Category))
+                        {
+                            <h6 class="mt-4 mb-3 fw-bold">@(string.IsNullOrEmpty(group.Key) ? "Genel" : group.Key)</h6>
+                            foreach (var skill in group)
+                            {
+                                <div class="mb-4">
+                                    <div class="d-flex justify-content-between mb-2">
+                                        <span class="fw-medium">@skill.Name</span>
+                                        <span class="badge bg-primary">@skill.Level%</span>
+                                    </div>
+                                    <div class="progress" style="height: 8px;">
+                                        <div class="progress-bar bg-primary" role="progressbar" style="width: @skill.Level%;" 
+                                             aria-valuenow="@skill.Level" aria-valuemin="0" aria-valuemax="100"></div>
+                                    </div>
+                                </div>
+                            }
+                        }
+                    }
+                    else
+                    {
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle me-2"></i> Henüz yetenek bilgisi girilmemiş.
+                        </div>
                     }
                 </div>
             </div>
         </div>
 
-        <div class="card border-0 shadow-sm">
-            <div class="card-header bg-primary text-white">
-                <h5 class="mb-0"><i class="fas fa-code me-2"></i> Yetenekler</h5>
-            </div>
-            <div class="card-body">
-                @if (ViewBag.Skills != null && ViewBag.Skills.Count > 0)
-                {
-                    var skillGroups = ViewBag.Skills as System.Collections.Generic.List<DinamikCvSitesi.Models.Skill>;
-                    
-                    foreach (var group in skillGroups.GroupBy(s => s.Category))
+        <!-- Main Resume Content -->
+        <div class="col-md-8">
+            <!-- Experience Section -->
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header bg-primary text-white p-3">
+                    <h5 class="mb-0"><i class="fas fa-briefcase me-2"></i> İş Deneyimi</h5>
+                </div>
+                <div class="card-body p-4">
+                    @if (ViewBag.Experiences != null && ViewBag.Experiences.Count > 0)
                     {
-                        <h6 class="mt-3">@(string.IsNullOrEmpty(group.Key) ? "Genel" : group.Key)</h6>
-                        foreach (var skill in group)
+                        foreach (var experience in ViewBag.Experiences)
                         {
-                            <div class="mb-3">
-                                <div class="d-flex justify-content-between mb-1">
-                                    <span>@skill.Name</span>
-                                    <span>@skill.Level%</span>
+                            <div class="timeline-item mb-4">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <h5 class="fw-bold mb-0">@experience.Position</h5>
+                                    <span class="badge bg-primary">
+                                        @(experience.StartDate?.ToString("MMM yyyy")) - 
+                                        @(experience.IsCurrentlyWorking ? "Şu an" : experience.EndDate?.ToString("MMM yyyy"))
+                                    </span>
                                 </div>
-                                <div class="progress" style="height: 10px;">
-                                    <div class="progress-bar bg-primary" role="progressbar" style="width: @skill.Level%;" 
-                                         aria-valuenow="@skill.Level" aria-valuemin="0" aria-valuemax="100"></div>
+                                <h6 class="fw-medium mb-1">@experience.Company</h6>
+                                <p class="text-muted small mb-3"><i class="fas fa-map-marker-alt me-1"></i> @experience.Location</p>
+                                <p class="mb-0">@experience.Description</p>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle me-2"></i> Henüz iş deneyimi bilgisi girilmemiş.
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <!-- Education Section -->
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header bg-primary text-white p-3">
+                    <h5 class="mb-0"><i class="fas fa-graduation-cap me-2"></i> Eğitim</h5>
+                </div>
+                <div class="card-body p-4">
+                    @if (ViewBag.Educations != null && ViewBag.Educations.Count > 0)
+                    {
+                        foreach (var education in ViewBag.Educations)
+                        {
+                            <div class="timeline-item mb-4">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <h5 class="fw-bold mb-0">@education.Degree</h5>
+                                    <span class="badge bg-primary">
+                                        @(education.StartDate?.ToString("MMM yyyy")) - 
+                                        @(education.IsCurrentlyStudying ? "Şu an" : education.EndDate?.ToString("MMM yyyy"))
+                                    </span>
                                 </div>
+                                <h6 class="fw-medium mb-1">@education.School</h6>
+                                <p class="text-muted small mb-3"><i class="fas fa-book me-1"></i> @education.FieldOfStudy</p>
+                                <p class="mb-0">@education.Description</p>
                             </div>
                         }
                     }
-                }
-                else
-                {
-                    <p class="text-muted">Henüz yetenek bilgisi girilmemiş.</p>
-                }
-            </div>
-        </div>
-    </div>
-
-    <div class="col-md-8">
-        <div class="card border-0 shadow-sm mb-4">
-            <div class="card-header bg-primary text-white">
-                <h5 class="mb-0"><i class="fas fa-briefcase me-2"></i> İş Deneyimi</h5>
-            </div>
-            <div class="card-body">
-                @if (ViewBag.Experiences != null && ViewBag.Experiences.Count > 0)
-                {
-                    foreach (var experience in ViewBag.Experiences)
+                    else
                     {
-                        <div class="mb-4">
-                            <div class="d-flex justify-content-between">
-                                <h5>@experience.Position</h5>
-                                <span class="badge bg-primary">
-                                    @(experience.StartDate?.ToString("MMM yyyy")) - 
-                                    @(experience.IsCurrentlyWorking ? "Şu an" : experience.EndDate?.ToString("MMM yyyy"))
-                                </span>
-                            </div>
-                            <h6 class="text-muted">@experience.Company</h6>
-                            <p class="text-muted mb-2">@experience.Location</p>
-                            <p>@experience.Description</p>
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle me-2"></i> Henüz eğitim bilgisi girilmemiş.
                         </div>
-                        if (experience != ViewBag.Experiences[ViewBag.Experiences.Count - 1])
-                        {
-                            <hr />
-                        }
                     }
-                }
-                else
-                {
-                    <p class="text-muted">Henüz iş deneyimi bilgisi girilmemiş.</p>
-                }
+                </div>
             </div>
-        </div>
 
-        <div class="card border-0 shadow-sm mb-4">
-            <div class="card-header bg-primary text-white">
-                <h5 class="mb-0"><i class="fas fa-graduation-cap me-2"></i> Eğitim</h5>
-            </div>
-            <div class="card-body">
-                @if (ViewBag.Educations != null && ViewBag.Educations.Count > 0)
-                {
-                    foreach (var education in ViewBag.Educations)
+            <!-- Certificates Section -->
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-primary text-white p-3">
+                    <h5 class="mb-0"><i class="fas fa-certificate me-2"></i> Sertifikalar</h5>
+                </div>
+                <div class="card-body p-4">
+                    @if (ViewBag.Certificates != null && ViewBag.Certificates.Count > 0)
                     {
-                        <div class="mb-4">
-                            <div class="d-flex justify-content-between">
-                                <h5>@education.Degree</h5>
-                                <span class="badge bg-primary">
-                                    @(education.StartDate?.ToString("MMM yyyy")) - 
-                                    @(education.IsCurrentlyStudying ? "Şu an" : education.EndDate?.ToString("MMM yyyy"))
-                                </span>
-                            </div>
-                            <h6 class="text-muted">@education.School</h6>
-                            <p class="text-muted mb-2">@education.FieldOfStudy</p>
-                            <p>@education.Description</p>
-                        </div>
-                        if (education != ViewBag.Educations[ViewBag.Educations.Count - 1])
-                        {
-                            <hr />
-                        }
-                    }
-                }
-                else
-                {
-                    <p class="text-muted">Henüz eğitim bilgisi girilmemiş.</p>
-                }
-            </div>
-        </div>
-
-        <div class="card border-0 shadow-sm">
-            <div class="card-header bg-primary text-white">
-                <h5 class="mb-0"><i class="fas fa-certificate me-2"></i> Sertifikalar</h5>
-            </div>
-            <div class="card-body">
-                @if (ViewBag.Certificates != null && ViewBag.Certificates.Count > 0)
-                {
-                    <div class="row">
-                        @foreach (var certificate in ViewBag.Certificates)
-                        {
-                            <div class="col-md-6 mb-3">
-                                <div class="card h-100">
-                                    <div class="card-body">
-                                        <h6>@certificate.Name</h6>
-                                        <p class="text-muted mb-2">@certificate.IssuingOrganization</p>
-                                        <p class="small mb-2">
-                                            <i class="fas fa-calendar-alt me-1"></i> @certificate.IssueDate?.ToString("MMMM yyyy")
-                                            @if (certificate.ExpirationDate.HasValue)
+                        <div class="row g-4">
+                            @foreach (var certificate in ViewBag.Certificates)
+                            {
+                                <div class="col-md-6">
+                                    <div class="card h-100 border-0 shadow-sm">
+                                        <div class="card-body">
+                                            <h6 class="fw-bold">@certificate.Name</h6>
+                                            <p class="text-muted mb-2">
+                                                <i class="fas fa-building me-1"></i> @certificate.IssuingOrganization
+                                            </p>
+                                            <p class="small mb-3">
+                                                <i class="fas fa-calendar-alt me-1"></i> @certificate.IssueDate?.ToString("MMMM yyyy")
+                                                @if (certificate.ExpirationDate.HasValue)
+                                                {
+                                                    <span> - @certificate.ExpirationDate?.ToString("MMMM yyyy")</span>
+                                                }
+                                            </p>
+                                            @if (!string.IsNullOrEmpty(certificate.CredentialURL))
                                             {
-                                                <span> - @certificate.ExpirationDate?.ToString("MMMM yyyy")</span>
+                                                <a href="@certificate.CredentialURL" target="_blank" class="btn btn-sm btn-outline-primary w-100">
+                                                    <i class="fas fa-external-link-alt me-1"></i> Doğrula
+                                                </a>
                                             }
-                                        </p>
-                                        @if (!string.IsNullOrEmpty(certificate.CredentialURL))
-                                        {
-                                            <a href="@certificate.CredentialURL" target="_blank" class="btn btn-sm btn-outline-primary">
-                                                <i class="fas fa-external-link-alt me-1"></i> Doğrula
-                                            </a>
-                                        }
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        }
-                    </div>
-                }
-                else
-                {
-                    <p class="text-muted">Henüz sertifika bilgisi girilmemiş.</p>
-                }
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle me-2"></i> Henüz sertifika bilgisi girilmemiş.
+                        </div>
+                    }
+                </div>
             </div>
         </div>
     </div>
-</div> 
+</div>
+
+<!-- CV Download Section -->
+<section class="section bg-light py-5 mt-5 text-center fade-in">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <h2 class="mb-4">Özgeçmişimi İndirin</h2>
+                <p class="lead mb-4">Özgeçmişimin tamamını PDF formatında indirebilirsiniz.</p>
+                <a href="#" class="btn btn-primary px-4 py-2">
+                    <i class="fas fa-download me-2"></i> CV İndir
+                </a>
+            </div>
+        </div>
+    </div>
+</section> 
